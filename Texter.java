@@ -7,9 +7,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
+import java.awt.ComponentOrientation;
 import java.nio.file.*;
 import java.util.*;
 import java.io.IOException;
+import java.io.File;
 
 public class Texter {
 
@@ -20,22 +22,36 @@ public class Texter {
 	JMenuItem[] fontItems;
 	JMenuItem[] sizeButtons;
 	
+	JButton quitButton;
+	JButton maximizeButton;
+	JButton minimizeButton;
+	
 	int currentSize;
 	String currentFont;
+	Color currentColor;
 	
 	String[] fonts = {"Arial", "Calibri", "Comic Sans MS", "Times New Roman", "Andy"};
 	int[] sizes = {11, 14, 18, 24, 36, 48, 72};
 
+	
+	
+	//----------------------------------------------------------  MAIN --------------------------------------------------------------
 	public static void main(String[] args) {
 		Texter app = new Texter();
 		app.setVariables();
 		app.buildGUI();
 	}
+	//----------------------------------------------------------  END OF MAIN --------------------------------------------------------------
+	
+	
 	
 	public void setVariables() {
 		currentSize = 24;
 		currentFont = "Times New Roman";
+		currentColor = new Color(82, 207, 98);
 	}
+	
+	//----------------------------------------------------------  BUILD GUI --------------------------------------------------------------
 	
 	public void buildGUI() {
 	
@@ -58,6 +74,8 @@ public class Texter {
 
 		JMenuItem quitItem = new JMenuItem("Quit");
 		quitItem.addActionListener(new QuitListener());	
+		
+		
 		
 		fileMenu.add(newItem);
 		fileMenu.add(saveItem);
@@ -86,8 +104,15 @@ public class Texter {
 		}
 		editorMenu.add(sizeMenu);
 		
-		
 		menuBar.add(editorMenu);
+		
+		ImageIcon quitIcon = new ImageIcon("resources/quitButton.png");
+		quitButton = new MenuButton(quitIcon);
+		
+		menuBar.add(Box.createHorizontalGlue());
+		menuBar.add(quitButton);
+		
+		
 		
 	
 		field = new JTextArea();
@@ -100,7 +125,12 @@ public class Texter {
 		
 		frame.setVisible(true);
 	}
+	//----------------------------------------------------------  END OF BUILD GUI --------------------------------------------------------------
 	
+	
+	
+	
+	//----------------------------------------------------------  UTIL METHODS --------------------------------------------------------------
 	public void saveFile(Path path, List<String> text) {
 		try {
 		
@@ -139,6 +169,14 @@ public class Texter {
 		}
 		System.exit(0);
 	}
+	
+	//----------------------------------------------------------  END OF UTIL METHODS --------------------------------------------------------------
+	
+	
+	
+	
+	
+	//----------------------------------------------------------  BUTTON LISTENERS --------------------------------------------------------------
 	
 	class NewListener implements ActionListener {
 		public void actionPerformed(ActionEvent a) {
@@ -200,8 +238,14 @@ public class Texter {
 		}
 	}
 	
+	//----------------------------------------------------------  END OF BUTTON LISTENERS --------------------------------------------------------------
+	
+	
+	
+	
+	//----------------------------------------------------------  MENU CLASS --------------------------------------------------------------
+	
 	class MyMenuBar extends JMenuBar {
-		Color bgColor = new Color(82, 207, 98);
 		int posX;
 		int posY;
 		int sizeX = frame.getWidth();
@@ -227,16 +271,72 @@ public class Texter {
 		}
 		
 		public void setColor(Color color) {
-			bgColor=color;
+			currentColor=color;
 		}
 
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
-			g2d.setColor(bgColor);
+			g2d.setColor(currentColor);
 			g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
 
 		}
-}
+	}
+	
+	//----------------------------------------------------------  END OF MENU CLASS --------------------------------------------------------------
+	
+	
+	
+	
+	//----------------------------------------------------------  MENU BUTTON CLASS --------------------------------------------------------------
+	class MenuButton extends JButton {
+
+        private Color hoverBackgroundColor;
+        private Color pressedBackgroundColor;
+
+		public MenuButton(ImageIcon icon) {
+			super(icon);
+			setBorder(null);
+			setBackground(currentColor);
+			this.pressedBackgroundColor = currentColor;
+			this.hoverBackgroundColor = currentColor;
+		}
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            /*if (getModel().isPressed()) {
+                g.setColor(pressedBackgroundColor);
+            } else if (getModel().isRollover()) {
+                g.setColor(hoverBackgroundColor);
+            } else {
+                g.setColor(getBackground());
+            }*/
+			g.setColor(currentColor);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            super.paintComponent(g);
+        }
+
+        @Override
+        public void setContentAreaFilled(boolean b) {
+        }
+
+        public Color getHoverBackgroundColor() {
+            return hoverBackgroundColor;
+        }
+
+        public void setHoverBackgroundColor(Color hoverBackgroundColor) {
+            this.hoverBackgroundColor = hoverBackgroundColor;
+        }
+
+        public Color getPressedBackgroundColor() {
+            return pressedBackgroundColor;
+        }
+
+        public void setPressedBackgroundColor(Color pressedBackgroundColor) {
+            this.pressedBackgroundColor = pressedBackgroundColor;
+        }
+    }
+	
+	//----------------------------------------------------------  END OF MENU BUTTON CLASS --------------------------------------------------------------
 }

@@ -38,23 +38,43 @@ public class Texter {
 	//----------------------------------------------------------  MAIN --------------------------------------------------------------
 	public static void main(String[] args) {
 		Texter app = new Texter();
-		app.setVariables();
+		app.setVariablesAndUI();
 		app.buildGUI();
 	}
 	//----------------------------------------------------------  END OF MAIN --------------------------------------------------------------
 	
 	
-	
-	public void setVariables() {
+	public void setVariablesAndUI() {
 		currentSize = 24;
 		currentFont = "Times New Roman";
 		currentColor = new Color(82, 207, 98);
+		
+		/*UIManager.put("TabbedPane.background", currentColor);
+		UIManager.put("TabbedPane.selected", currentColor);*/
+		
+		UIManager.put("MenuBar.border", currentColor);
+		UIManager.put("MenuBar.selectionBackground", currentColor);
+		UIManager.put("MenuBar.shadow", currentColor);
+		
+		UIManager.put("MenuItem.background", currentColor);
+		UIManager.put("MenuItem.selectionBackground", currentColor);
+		UIManager.put("MenuItem.border", BorderFactory.createLineBorder(currentColor, 1));
+		
+		UIManager.put("Menu.background", currentColor);
+		UIManager.put("Menu.selectionBackground", currentColor);
+		UIManager.put("Menu.border", BorderFactory.createLineBorder(currentColor, 1));
+		
+		UIManager.put("PopupMenu.border", BorderFactory.createLineBorder(currentColor, 1));
+		UIManager.put("PopupMenu.background", currentColor);
+		UIManager.put("PopupMenu.selectionBackground", currentColor);
+		
+		
+		UIManager.put("Button.select", currentColor);
 	}
 	
 	//----------------------------------------------------------  BUILD GUI --------------------------------------------------------------
 	
 	public void buildGUI() {
-	
 		fileChooser = new JFileChooser();
 	
 		frame = new TexterWindow();
@@ -108,6 +128,7 @@ public class Texter {
 		
 		ImageIcon quitIcon = new ImageIcon("resources/quitButton.png");
 		quitButton = new MenuButton(quitIcon);
+		quitButton.addActionListener(new QuitListener());	
 		
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(quitButton);
